@@ -1,12 +1,15 @@
-
 from flask import Flask, jsonify
 from src.cost_api import cost_bp
+from src.anomaly_api import anomaly_bp
 
 def create_app():
     app = Flask(__name__)
 
-    # Register treatment package cost API
+    # Register existing treatment cost API
     app.register_blueprint(cost_bp)
+
+    # Register hospital anomaly detection API
+    app.register_blueprint(anomaly_bp)
 
     @app.route("/", methods=["GET"])
     def home():
@@ -14,7 +17,8 @@ def create_app():
             "project": "EvidenceBridge Karnataka ML API",
             "status": "running",
             "components": [
-                "Treatment Package Cost Prediction"
+                "Treatment Package Cost Prediction",
+                "Hospital Anomaly Detection"
             ]
         })
 
@@ -23,7 +27,11 @@ def create_app():
         return jsonify({
             "success": True,
             "service": "EvidenceBridge ML API",
-            "status": "healthy"
+            "status": "healthy",
+            "components": [
+                "Treatment Cost Prediction",
+                "Hospital Anomaly Detection"
+            ]
         })
 
     return app
