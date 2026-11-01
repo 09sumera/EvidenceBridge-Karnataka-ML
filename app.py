@@ -1,15 +1,16 @@
 from flask import Flask, jsonify
 from src.cost_api import cost_bp
 from src.anomaly_api import anomaly_bp
+from src.evidence_api import evidence_bp
+from src.recommendation_api import recommendation_bp
 
 def create_app():
     app = Flask(__name__)
 
-    # Register existing treatment cost API
     app.register_blueprint(cost_bp)
-
-    # Register hospital anomaly detection API
     app.register_blueprint(anomaly_bp)
+    app.register_blueprint(evidence_bp)
+    app.register_blueprint(recommendation_bp)
 
     @app.route("/", methods=["GET"])
     def home():
@@ -18,7 +19,9 @@ def create_app():
             "status": "running",
             "components": [
                 "Treatment Package Cost Prediction",
-                "Hospital Anomaly Detection"
+                "Hospital Anomaly Detection",
+                "Hospital Directory Evidence Assessment",
+                "Hospital Recommendation"
             ]
         })
 
@@ -30,7 +33,9 @@ def create_app():
             "status": "healthy",
             "components": [
                 "Treatment Cost Prediction",
-                "Hospital Anomaly Detection"
+                "Hospital Anomaly Detection",
+                "Evidence Assessment",
+                "Hospital Recommendation"
             ]
         })
 

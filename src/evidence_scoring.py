@@ -19,7 +19,7 @@ EVIDENCE_FIELDS = {
     "empanelment_info_available": "Empanelment_or_Collaboration_with"
 }
 
-INVALID_VALUES = {"", "0", "0.0", "na", "n/a", "null", "none", "unknown"}
+INVALID_VALUES = {"", "0", "0.0", "na", "n/a", "null", "none", "unknown", "nan", "<na>"}
 
 def score_hospital_evidence(hospitals):
     """
