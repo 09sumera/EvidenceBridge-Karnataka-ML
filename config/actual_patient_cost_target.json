@@ -1,0 +1,9 @@
+{
+    "project": "EvidenceBridge Karnataka",
+    "dataset_type": "Actual Patient Treatment Cost",
+    "prediction_target": "Patient_Out_of_Pocket_INR",
+    "currency": "INR",
+    "training_allowed": false,
+    "reason": "Awaiting verified real patient billing records",
+    "privacy": "No personally identifiable patient information"
+}

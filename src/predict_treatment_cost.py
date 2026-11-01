@@ -1,0 +1,44 @@
+
+import pandas as pd
+import joblib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+MODEL_PATH = ROOT / "models/treatment_package_cost_model.joblib"
+DATA_PATH = ROOT / "data/interim/cost_data_extraction/COST003_Sakhii_package_prices.csv"
+
+_model = joblib.load(MODEL_PATH)
+_data = pd.read_csv(DATA_PATH)
+
+def predict_treatment_cost(package_name, room_category):
+    matches = _data[
+        (_data["Procedure_Package"] == package_name) &
+        (_data["Room_Category"] == room_category)
+    ]
+
+    if matches.empty:
+        raise ValueError("No published reference price for this package-room combination.")
+
+    actual_price = float(matches.iloc[0]["Quoted_Price_INR"])
+
+    features = pd.DataFrame([{
+        "Procedure_Package": package_name,
+        "Room_Category": room_category
+    }])
+
+    estimated_price = float(_model.predict(features)[0])
+
+    return {
+        "hospital": "Sakhii Hospital",
+        "district": "Bengaluru",
+        "package": package_name,
+        "room_category": room_category,
+        "published_reference_price_inr": round(actual_price, 2),
+        "experimental_ml_estimate_inr": round(estimated_price, 2),
+        "difference_inr": round(estimated_price - actual_price, 2),
+        "price_type": "Published hospital package tariff",
+        "model_status": "Experimental",
+        "karnataka_wide_prediction": False,
+        "package_scope_verified": False
+    }
