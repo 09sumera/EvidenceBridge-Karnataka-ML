@@ -1,24 +1,40 @@
-
 import pandas as pd
 import joblib
-from pathlib import Path
+from huggingface_hub import hf_hub_download
 
-ROOT = Path(__file__).resolve().parents[1]
+# Public Hugging Face repository
+REPO_ID = "sumera09/evidencebridge-karnataka-ml"
 
-MODEL_PATH = ROOT / "models/treatment_package_cost_model.joblib"
-DATA_PATH = ROOT / "data/interim/cost_data_extraction/COST003_Sakhii_package_prices.csv"
+# Download trained model
+MODEL_PATH = hf_hub_download(
+    repo_id=REPO_ID,
+    filename="models/treatment_package_cost_model.joblib",
+    repo_type="model"
+)
 
+# Download supporting package-price data
+DATA_PATH = hf_hub_download(
+    repo_id=REPO_ID,
+    filename="data/COST003_Sakhii_package_prices.csv",
+    repo_type="model"
+)
+
+# Load model and data
 _model = joblib.load(MODEL_PATH)
 _data = pd.read_csv(DATA_PATH)
 
+
 def predict_treatment_cost(package_name, room_category):
+
     matches = _data[
         (_data["Procedure_Package"] == package_name) &
         (_data["Room_Category"] == room_category)
     ]
 
     if matches.empty:
-        raise ValueError("No published reference price for this package-room combination.")
+        raise ValueError(
+            "No published reference price for this package-room combination."
+        )
 
     actual_price = float(matches.iloc[0]["Quoted_Price_INR"])
 
